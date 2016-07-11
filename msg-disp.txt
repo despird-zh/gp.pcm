@@ -1,0 +1,20 @@
+drop view gp_msg_dispatch;
+create view gp_msg_dispatch as
+select 
+msgs.chat_id,
+msgs.message_id,
+msgs.msg_type,
+msgs.msg_content,
+msgs.send_time,
+msgs.sender,
+msgs.resource_id,
+msgs.resource_type,
+disp.receiver,
+disp.touch_flag,
+disp.touch_time,
+rcvs.full_name as rcv_name,
+sdrs.full_name as send_name
+from gp_chat_dispatch disp
+left join gp_chat_msgs msgs on msgs.message_id = disp.message_id
+left join (select account,full_name from gp_users) sdrs on msgs.sender = sdrs.account
+left join (select account,full_name from gp_users) rcvs on disp.receiver = rcvs.account
